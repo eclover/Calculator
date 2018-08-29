@@ -23,6 +23,7 @@ bool QCalculatorUI::Construct()
         m_edit->move(10, 10);
         m_edit->resize(240, 30);
         m_edit->setReadOnly(true);
+        m_edit->setAlignment(Qt::AlignRight);
     }
     else
         ret = false;
@@ -77,7 +78,9 @@ void QCalculatorUI::ButtonClicked()
     QString editText = m_edit->text();
     if(btnText == "=")
     {
-
+        QString result = "";
+        result = dec.expression(editText);
+        m_edit->setText(dec.m_exp +"=" + dec.m_result);
     }
     else if(btnText == "C")
     {

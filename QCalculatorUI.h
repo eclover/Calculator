@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
+#include "QCalculatorDec.h"
 
 
 class QCalculatorUI : public QWidget
@@ -19,6 +20,8 @@ public:
 
     QLineEdit* m_edit;
     QPushButton* m_buttons[20];
+    QCalculatorDec dec;
+    bool calFlag ;
 
 public slots:
     void ButtonClicked();

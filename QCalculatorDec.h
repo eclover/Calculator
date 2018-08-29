@@ -22,6 +22,9 @@ public:
     bool isSymbol(QString s);
     bool isOperator(QString s);
     int priority(QString s);
+    QString calulate(QQueue<QString>&exp);
+    QString calulate(QString l,QString op,QString r);
+    bool expression(const QString& exp);
     bool isMatch(const QQueue< QString>& exp );
     bool transform( QQueue<QString>&exp,QQueue<QString>& output);
     QQueue<QString> split(const QString& exp);

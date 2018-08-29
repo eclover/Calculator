@@ -3,14 +3,8 @@
 
 QCalculatorDec::QCalculatorDec()
 {
-    QQueue<QString> queue = split("1+(2-3)*4+10/5.5");
-
-    QQueue<QString> output ;
-    transform(queue,output);
-    for(int i=0;i<output.length();i++)
-    {
-        qDebug()<<output[i];
-    }
+    m_result = "";
+    m_exp = "";
 }
 
 //1.判断是否为数字或小数点
@@ -191,4 +185,110 @@ bool QCalculatorDec::transform( QQueue<QString>& exp, QQueue<QString>& output)
     }
 
     return ret;
+}
+
+//9.计算后缀表达式结果
+QString QCalculatorDec::calulate(QQueue<QString>&exp)
+{
+    QString ret = "";
+    QStack<QString> stack;
+    while(!exp.isEmpty())
+    {
+        QString s = exp.dequeue();
+
+        if(isNumber(s))
+        {
+            stack.push(s);
+        }
+        else if(isOperator(s))
+        {
+            if(!stack.isEmpty())
+            {
+                QString rp = stack.pop();
+                QString lp = stack.pop();
+                QString op = s;
+                QString result = calulate(lp,op,rp);
+                stack.push(result);
+            }
+        }
+        else
+        {
+            ret = "Error";
+        }
+    }
+    if(!stack.isEmpty() && stack.size() == 1)
+    {
+        ret = stack.pop();
+    }
+    else
+    {
+        ret = "Error";
+    }
+
+    return ret;
+}
+
+QString QCalculatorDec::calulate(QString l, QString op, QString r)
+{
+    QString ret = "";
+    if(!isNumber(l) || !isNumber(r))
+    {
+        ret = "Error";
+    }
+    else
+    {
+        double dl = l.toDouble();
+        double dr = r.toDouble();
+        if(op == "+")
+        {
+            ret.sprintf("%f",dl+dr);
+        }
+        else if(op == "-")
+        {
+            ret.sprintf("%f",dl - dr);
+        }
+        else if(op == "*")
+        {
+            ret.sprintf("%f",dl * dr);
+        }
+        else if(op == "/")
+        {
+            const double P = 0.00000000000000001;
+            if((-P < dr) && (dr < P))
+            {
+                ret = "Error";
+            }
+            else
+            {
+                ret.sprintf("%f",dl / dr);
+            }
+        }
+        else
+        {
+            ret = "Error";
+        }
+    }
+    return ret;
+}
+
+
+//10.计算
+bool QCalculatorDec::expression(const QString &exp)
+{
+    bool ret = false;
+    QQueue<QString> queue = split(exp);
+    QQueue<QString> output ;
+    m_exp = exp;
+    if(transform(queue,output))
+    {
+         m_result = calulate(output);
+         ret = (m_result != "Error");
+    }
+    else
+    {
+        m_result = "Error";
+    }
+
+    return ret;
+
 }
